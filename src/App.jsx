@@ -17,10 +17,11 @@ const App = () => {
         </div>
 
         <div className="bg-bg-light w-full px-6">
-          <UrlForm />
+          <UrlForm/>
+
         </div>
         <div className="bg-bg-light py-16 px-4">
-         <AdvancedStatistics/>
+          <AdvancedStatistics />
         </div>
       </main>
 
