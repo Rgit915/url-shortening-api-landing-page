@@ -14,7 +14,7 @@ const Hero = () => {
           links are performing.
         </p>
 
-        <button className="rounded-4xl px-6 py-3 bg-primary-cyan font-bold text-xl text-white">Get Started</button>
+        <button className="rounded-4xl px-6 py-3 bg-primary-cyan font-bold text-xl text-white cursor-pointer hover:bg-cyan-hover">Get Started</button>
       </article>
     </section>
   );
