@@ -1,19 +1,48 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-const UrlForm = ({ onShorten }) => {
+import UrlList from "./UrlList";
+
+const getLocalStorage = () => {
+  const saved = localStorage.getItem("links");
+  return saved ? JSON.parse(saved) : [];
+};
+
+const UrlForm = () => {
   const [inputUrl, setInputUrl] = useState("");
   const [error, setError] = useState("");
+  const [links, setLinks] = useState(getLocalStorage());
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!inputUrl.trim()) {
       setError("Please add a link");
       return;
     }
-    setError("");
-    onShorten(inputUrl);
-    setInputUrl("");
+
+    try {
+      const res = await fetch(
+        `https://api.shrtco.de/v2/shorten?url=${inputUrl}`
+      );
+      const data = await res.json();
+
+      if (!data.ok) throw new Error("Failed to shorten");
+
+      const newLink = {
+        original: data.result.original_link,
+        short: data.result.full_short_link,
+      };
+
+      setLinks((prev) => [newLink, ...prev]);
+      setInputUrl("");
+    } catch (err) {
+      console.error("Error fetching shortened URL:", err);
+      alert(`Something went wrong: ${err.message}`);
+    }
   };
+
+  useEffect(() => {
+    localStorage.setItem("links", JSON.stringify(links));
+  }, [links]);
 
   return (
     <section
@@ -70,6 +99,8 @@ const UrlForm = ({ onShorten }) => {
           {error}
         </p>
       )}
+      {/* Show list of links */}
+      <UrlList links={links} />
     </section>
   );
 };
